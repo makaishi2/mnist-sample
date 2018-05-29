@@ -1,0 +1,93 @@
+<html>
+<head>
+{% extends "layout.html" %}
+{% block body %}
+</head>
+<body>
+<h2>MNIST sample</h2>
+<hr>
+<div> 
+<canvas  width="500" height="200"  id="canvas" class="canvas"></canvas> 
+</div>
+<form action="/send" method="post" enctype="multipart/form-data" id="fileUploadForm">
+<br>
+<input type="file" id="image" name="image" accept="image/*">
+<br>
+<br>
+<br>
+<input type="button" name="button" value="分析開始" id="predict"/>
+</form>
+<hr>
+<br>
+予測 <label id="result"></label>
+<br>
+</body>
+</html>
+
+
+<script>
+
+$(function(){
+    $('#predict').click(predict) 
+});
+
+function call_flask( type, url, error ) {
+    var elem =  document.getElementById("result");
+    elem.innerHTML = '';
+    var form = $('#fileUploadForm')[0];
+    var data = new FormData(form);
+    $("#send").prop("disabled", true);
+    $.ajax({
+        type: "POST",
+        enctype: 'multipart/form-data',
+        url: "/predict",
+        data: data,
+        processData: false,
+        contentType: false,
+        cache: false,
+        timeout: 600000,
+        success: function (data) {
+            console.log('predict callback')
+            console.log(data);
+            $('#result').text(data);
+        }
+    });
+}
+
+function predict() {
+    call_flask( 'GET', '/predict', 
+            function(XMLHttpRequest,textStatus,errorThrown){alert('error');} );
+}
+
+$(function(){
+    $('#fileUploadForm').on('change', 'input[type="file"]', function(e) {
+        var file = e.target.files[0];
+        canvas = $("#canvas");
+        ctx = canvas[0].getContext('2d');
+        var image = new Image();
+        var fr = new FileReader();
+        if(file.type.indexOf("image") < 0){
+            return false;
+        }
+        fr.onload = (function(evt) {
+            image.onload = function() {
+                canvasH = canvas[0].height;
+                canvasW = canvas[0].width;
+                imageH = 200;
+                imageW = canvasH*image.naturalWidth/image.naturalHeight;
+                ratioY = imageH / image.naturalHeight;
+                ratioX = imageW / image.naturalWidth;
+                ctx.clearRect(0, 0, canvasW, canvasH);
+                ctx.drawImage(image, 0, 0, imageW, imageH);
+                ctx.strokeRect(0, 0, imageW, imageH);
+                ctx.strokeStyle = "rgb(0, 0, 255)";
+            }
+            image.src = evt.target.result;
+        })
+        fr.readAsDataURL(file);
+    })
+})   
+
+</script>
+
+{% endblock %}

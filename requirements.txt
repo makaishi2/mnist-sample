@@ -1,0 +1,6 @@
+cfenv
+requests
+flask
+Image
+python-dotenv
+numpy
