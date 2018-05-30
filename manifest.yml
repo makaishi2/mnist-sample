@@ -1,0 +1,10 @@
+---
+declared-services:
+  machine-learning-ym:
+    label: pm-20
+    plan: Standard
+applications:
+- path: .
+  memory: 128M
+  services:
+  - machine-learning-ym

@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 import urllib3, requests, json
 import os
 from cfenv import AppEnv
@@ -53,7 +55,7 @@ def predict():
         img = Image.open(imagefile)
         img2 = ImageOps.grayscale(img)
         img_resize = img2.resize((28, 28))
-        #ftitle, fext = os.path.splitext(imagefile)
+        ftitle, fext = os.path.splitext(imagefile)
         #img_resize.save(ftitle + '_sam' + fext)
         im = np.array(img_resize)
         im_data = np.uint8(im)
@@ -72,7 +74,7 @@ def predict():
     headers = urllib3.util.make_headers(basic_auth=auth)
     url = '{}/v3/identity/token'.format(wml_credentials['url'])
     response = requests.get(url, headers=headers)
-    print(resopnse)
+    print(response)
     mltoken = json.loads(response.text).get('token')
     print('mltoken = ', mltoken)
     
