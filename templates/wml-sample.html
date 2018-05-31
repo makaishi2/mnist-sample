@@ -1,5 +1,20 @@
 <html>
 <head>
+<style> 
+  div.tooltip { 
+    position: absolute; 
+    text-align: center; 
+    width: 80px; 
+    height: 15px; 
+    padding: 2px; 
+    font: 14px sans-serif; 
+    background: lightsteelblue; 
+    border: 0px; 
+    border-radius: 8px; 
+    pointer-events: none; 
+  } 
+</style>
+
 {% extends "layout.html" %}
 {% block body %}
 </head>
@@ -14,16 +29,71 @@
 <input type="file" id="image" name="image" accept="image/*">
 <br>
 <br>
-<br>
 <input type="button" name="button" value="分析開始" id="predict"/>
 </form>
 <hr>
 <br>
-予測 <label id="result"></label>
+予測<br>
+<label id="result"></label>
 <br>
+<svg width="800" height="200"></svg>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+
+var svg = d3.select("svg"),
+margin = {top: 20, right: 20, bottom: 30, left: 80},
+width = +svg.attr("width") - margin.left - margin.right,
+height = +svg.attr("height") - margin.top - margin.bottom;
+var x = d3.scaleLinear().range([0, width]);
+var y = d3.scaleBand().range([height, 0]);
+var div = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
+function draw_graph(ds) {
+    
+    var g = svg.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    x.domain([0, 1.0]);
+    y.domain(ds.map(function(d) { return d.name; })).padding(0.1);
+
+    g.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x).ticks(5).tickFormat(function(d) { return d; }).tickSizeInner([-height]));
+
+    g.append("g")
+        .attr("class", "y axis")
+        .call(d3.axisLeft(y));
+
+    g.selectAll(".bar")
+        .data(ds)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", 0)
+        .attr("height", y.bandwidth())
+        .attr("y", function(d) { return y(d.name); })
+        .attr("width", function(d) { return x(d.value); })
+        .attr("fill", "steelblue")
+
+        .on("mouseover", function(d) {
+            div.transition()
+                .duration(200)
+                .style("opacity", .9);
+            div.html(d.name + ": " + d.value.toFixed(3))
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY - 28) + "px");
+        })
+        .on("mouseout", function(d) {
+            div.transition()
+                .duration(500)
+                .style("opacity", 0);
+        });
+}
+</script>
+
 </body>
 </html>
-
 
 <script>
 
@@ -34,6 +104,7 @@ $(function(){
 function call_flask( type, url, error ) {
     var elem =  document.getElementById("result");
     elem.innerHTML = '';
+    svg.selectAll("g").remove()
     var form = $('#fileUploadForm')[0];
     var data = new FormData(form);
     $("#send").prop("disabled", true);
@@ -48,7 +119,17 @@ function call_flask( type, url, error ) {
         timeout: 600000,
         success: function (data) {
             console.log('predict callback')
+            ar = JSON.parse(data)
+            ar.reverse()
+            ds2 = []
+            for ( i = 0, j = 9; i < ar.length; i++, j-- ) {
+                item = {'name' : j + "", 'value' : parseFloat(ar[i]) }
+                ds2.push(item)
+                console.log('data' + i + ':' + ar[i]); 
+            }
             console.log(data);
+            console.log(ds2);
+            draw_graph(ds2);
             $('#result').text(data);
         }
     });

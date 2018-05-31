@@ -87,12 +87,9 @@ def predict():
     res = json.loads(response_scoring.text)
     ret_list = res['values']
     ret0 = ret_list[0]
-    ret_max = max(ret0)
-    ret_index = ret0.index(ret_max)
-    ret_str = 'predict: %d  confidence: %5.2f%%' % (ret_index, ret_max*100)
-    print(ret_str)
+    ret1 = ['%6.3f' % (n) for n in ret0]
     print(json.dumps(ret0, indent=2))
-    return json.dumps(ret_str)
+    return json.dumps(ret1)
 
 @app.route('/favicon.ico')
 def favicon():
