@@ -1,7 +1,7 @@
 # Watson Machine Learning サンプルアプリ
 
 ## アプリケーションの説明
-このアプリケーションはWatson StudioでNeural Network Designerで作った手書き数数字を認識する深層学習モデルにWebサービス経由でアクセスし、アップロードしたイメージデータに書かれている数字を認識するアプリです。  
+このアプリケーションは**Watson Studio**の**Neural Network Designer**で作った手書き数数字を認識する深層学習モデルにWebサービス経由でアクセスし、アップロードしたイメージデータに書かれている数字を認識するアプリです。  
 
 ![](readme_images/mnist-web1.png)  
 
