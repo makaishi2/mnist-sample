@@ -41,7 +41,7 @@ def allowed_file(filename):
 @app.route('/')
 def top():
     name = "Top"
-    return render_template('wml-sample.html', title='WML Test', name=name)
+    return render_template('wml-sample.html', title='MNIST Sample Web', name=name)
 
 # 「予測」ボタンが押された時の処理
 @app.route('/predict', methods=['POST'])
@@ -87,7 +87,7 @@ def predict():
     res = json.loads(response_scoring.text)
     ret_list = res['values']
     ret0 = ret_list[0]
-    ret1 = ['%6.3f' % (n) for n in ret0]
+    ret1 = [round(n, 3) for n in ret0]
     print(json.dumps(ret0, indent=2))
     return json.dumps(ret1)
 
