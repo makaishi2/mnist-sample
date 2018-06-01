@@ -24,15 +24,15 @@ Watson MLのインスタンス名を``machine-learning-1``に変更して下さ�
 
 ## ソースのダウンロード
 Githubからアプリケーションのソースをダウンロードします。  
-あるいは、[Github](https://github.com/makaishi2/mnist-sample)にブラウザからアクセスして、zipファイルをダウンロード後、解凍します。  
 カレントディレクトリのサブディレクトリにソースはダウンロードされるので、あらかじめ適当なサブディレクトリを作り、そこにcdしてから下記のコマンドを実行します。  
-ダウンロード後、できたサブディレクトリにcdします。
+あるいは、[Github](https://github.com/makaishi2/mnist-sample)にブラウザからアクセスして、zipファイルをダウンロード後、解凍します。  
+解凍後、できたサブディレクトリにcdします。
  
 
 ```sh
 $ cd (適当なサブディレクトリ)
-$ git clone https://github.com/makaishi2/mnist-sample.git
-$ cd mnist-sample
+$ git clone https://github.com/makaishi2/wml-mnist-sample.git
+$ cd wml-mnist-sample
 ```
 
 ## CFコマンドでログイン
