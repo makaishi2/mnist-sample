@@ -6,7 +6,7 @@
 ![](readme_images/mnist-web1.png)  
 
 ## 前提
-Watson Studio上で、手書き数字(mnist)認識のための深層学習モデルの構築、学習、保存、テストまでできていることが前提です。  
+Watson Studio上で、手書き数字(mnist)認識のための深層学習モデルの構築、学習、保存、WEBサービス化、テストまでできていることが前提です。  
 詳細手順に関しては、[Watson Studioのディープラーニング機能(DLaaS)を使ってみた](https://qiita.com/ishida330/items/b093439a1646eba0f7c6)などを参照して下さい。
 
 ## 事前準備
