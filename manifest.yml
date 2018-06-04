@@ -2,7 +2,7 @@
 declared-services:
   machine-learning-1:
     label: pm-20
-    plan: Standard
+    plan: lite
 applications:
 - path: .
   memory: 128M
