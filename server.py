@@ -62,12 +62,9 @@ def predict():
         pil_img_gray = Image.fromarray(im_data)
         pil_img_gray.save(ftitle + '_mono' + fext)
         im_data2 = im_data.reshape(28, 28, 1)
-        im_data3 = 1- im_data2.astype("float32")/255 # invert image
-        im_max = im_data3.max()
-        im_min = im_data3.min()
-        im_data4 = (im_data3 - im_min) / (im_max - im_min)
-        im_data5 = im_data4.tolist()
-        print(im_data5)
+        im_data3 = 255- im_data2 # invert image
+        im_data4 = im_data3.tolist()
+        print(im_data4)
 
     # トークン取得
     auth = '{username}:{password}'.format(username=wml_credentials['username'], password=wml_credentials['password'])
@@ -80,7 +77,7 @@ def predict():
     
     # API呼出し用ヘッダ
     header = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + mltoken}
-    payload_scoring = {"values": [im_data5]}
+    payload_scoring = {"values": [im_data4]}
 
     # API呼出し
     response_scoring = requests.post(scoring_url, json=payload_scoring, headers=header)
