@@ -9,25 +9,18 @@
 Watson Studio上で、手書き数字(mnist)認識のための深層学習モデルの構築、学習、保存、WEBサービス化、テストまでできていることが前提です。  
 詳細手順に関しては、[Watson Studioのディープラーニング機能(DLaaS)を使ってみた](https://qiita.com/ishida330/items/b093439a1646eba0f7c6)などを参照して下さい。
 
-## 事前準備
-Watson MLのインスタンス名を``machine-learning-1``に変更して下さい。  
-インスタンス名の変更は、サービスの管理画面から行うことが可能です。
-
-
-## 前提ソフトの導入
-次の前提ソフトが導入されていることが前提です。
-
-[gitコマンドラインツール][git] (なくても可)   
+## CFコマンドの導入
+CFコマンドがまだ使えない場合は、導入を行います。
 [Cloud Foundryコマンドラインツール][cloud_foundry]  
-  
 注意: Cloud Foundaryのバージョンは最新として下さい。 
 
 ## ソースのダウンロード
 Githubからアプリケーションのソースをダウンロードします。  
 カレントディレクトリのサブディレクトリにソースはダウンロードされるので、あらかじめ適当なサブディレクトリを作り、そこにcdしてから下記のコマンドを実行します。  
-あるいは、[Github](https://github.com/makaishi2/mnist-sample)にブラウザからアクセスして、zipファイルをダウンロード後、解凍します。  
-解凍後、できたサブディレクトリにcdします。
- 
+GITコマンドを使わない場合は、[Github](https://github.com/makaishi2/wml-mnist-sample)ブラウザからアクセスして、zipファイルをダウンロード後、解凍します。  
+ダウンロード後、できたサブディレクトリにcdします。  
+以下はgitコマンドを使う場合の例です。
+
 
 ```sh
 $ cd (適当なサブディレクトリ)
@@ -47,6 +40,20 @@ $ cf login
 
 ![](readme_images/cf-login.png)  
 
+## Watson MLサービス名称の確認
+次のコマンドを実行し、Watson MLのサービス名称を確認します。
+
+```
+$ cf s | grep pm-20
+```
+
+結果がまったく返ってこない場合は、Watson Machine LearningがIAMサービスになっていると考えられます。
+その場合は、以下のリンク先の手順に従い、エイリアス定義を行って下さい。
+
+[IBM Cloud IAM対応のためのtips](https://qiita.com/makaishi2/items/ab2290e471fbff245b6a)
+
+以下では、Watson MLサービス名を``<pm-20-name>``であるとします。
+
 ## アプリケーションのデプロイ
 
 次のコマンドを実行します。
@@ -57,20 +64,25 @@ $ cf login
 $ cf push <service_name>
 ```
 
-## 環境変数の設定
+デプロイには数分かかります。
 
-WebサービスのエンドポイントURLに関しては、以下のコマンドで、設定する必要があります。  
-(注意) scoring_urlは、Waton Machine Learningの管理ダッシュボードより取得できますが、URLの最後に'/online'を付ける必要がある点に注意して下さい。
+## サービスのバインド・環境変数の設定
+
+次のcfコマンドでサービスのバインドとエンドポイントURLの設定を行います。
+scoring_urlは、Watson StudioのWebサービス管理画面->Implementationタブの**Scoreing End-point**の欄に記載があるので、コピペして利用します。
+コマンドのうちrgコマンド(アプリケーションの再構築)に数分の時間がかかります。
 
 ```
-$ cf set-env <service_name> SCORING_URL <scoring_url>
-$ cf restage  <service_name>
+$ cf ns <service_name> <pm20-name>
+$ cf se <service_name> SCORING_URL <scoring_url>
+$ cf rg <service_name>
+$ cf a
 ```
 
 ## アプリケーションのURLと起動
 
-デプロイには数分かかります。デプロイが正常に完了したらアプリケーションを起動できます。  
-次のURLをブラウザから指定して下さい。
+デプロイが正常に完了したらアプリケーションを起動できます。  
+最後のコマンド出力からアプリケーションのURLを調べて、そのURLをブラウザから入力して下さい。URLは通常下記の形になっています。
 
 ```
 https://<service_name>.mybluemix.net/
@@ -83,7 +95,7 @@ https://<service_name>.mybluemix.net/
 
 ## アプリケーションを修正する場合
 
-導入手順中、git cloneコマンドでダウンロードしたローカルリポジトリにアプリケーションのソースコードが入っています。アプリケーションを修正したい場合は、ローカルのソースを修正し、再度 ``cf push <service_name>`` コマンドを実行すると、IBM Cloud上のアプリケーションが更新されます。  
+アプリケーションを修正したい場合は、ローカルのソースを修正し、再度 ``cf push <service_name>`` コマンドを実行すると、IBM Cloud上のアプリケーションが更新されます。  
 
 ## ローカルで起動する場合
 
