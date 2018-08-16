@@ -10,8 +10,8 @@ Watson Studio上で、手書き数字(mnist)認識のための深層学習モデ
 詳細手順に関しては、[Watson Studioのディープラーニング機能(DLaaS)を使ってみた](https://qiita.com/ishida330/items/b093439a1646eba0f7c6)などを参照して下さい。
 
 ## ibmcloudコマンドの導入
-導入にはibmcloudコマンドを利用します。
-CFコマンドがまだ使えない場合は、導入を行います。
+導入にはibmcloudコマンドを利用します。  
+ibmcloudコマンドが未導入の場合は、以下のリンク先からダウンロード・導入を行って下さい。  
 [IBM Cloudコマンドラインツール](https://console.bluemix.net/docs/cli/reference/ibmcloud/download_cli.html#install_use)  
 注意: ibmcloudコマンドのバージョンは最新として下さい。 
 
