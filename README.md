@@ -92,7 +92,7 @@ $ ibmcloud app env-set <APP_NAME> SCORING_URL <scoring_url>
 $ ibmcloud app restage <APP_NAME>
 
 # アプリケーションのURLを確認
-$ ibmcloud service list
+$ ibmcloud app list
 ```
 
 ## アプリケーションのURLと起動
