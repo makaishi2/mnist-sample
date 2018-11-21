@@ -1,4 +1,4 @@
 ---
 applications:
 - path: .
-  memory: 128M
+  memory: 96M
