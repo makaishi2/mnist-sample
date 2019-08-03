@@ -18,8 +18,7 @@ if pm20 is None:
     load_dotenv(dotenv_path)
     wml_credentials = {
         "url": os.environ.get("WML_URL"),
-        "username": os.environ.get("WML_USERNAME"),
-        "password":  os.environ.get("WML_PASSWORD"),
+        "apikey": os.environ.get("WML_APIKEY"),
         "instance_id": os.environ.get("WML_INSTANCE_ID"),
     }
 else:
@@ -67,16 +66,22 @@ def predict():
         print(im_data4)
 
     # トークン取得
-    auth = '{username}:{password}'.format(username=wml_credentials['username'], password=wml_credentials['password'])
-    headers = urllib3.util.make_headers(basic_auth=auth)
-    url = '{}/v3/identity/token'.format(wml_credentials['url'])
-    response = requests.get(url, headers=headers)
-    print(response)
-    mltoken = json.loads(response.text).get('token')
-    print('mltoken = ', mltoken)
+    apikey = wml_credentials["apikey"]
+    # Get an IAM token from IBM Cloud
+    url     = "https://iam.bluemix.net/oidc/token"
+    headers = { "Content-Type" : "application/x-www-form-urlencoded" }
+    data    = "apikey=" + apikey + "&grant_type=urn:ibm:params:oauth:grant-type:apikey"
+    IBM_cloud_IAM_uid = "bx"
+    IBM_cloud_IAM_pwd = "bx"
+    response  = requests.post( url, headers=headers, data=data, 
+        auth=( IBM_cloud_IAM_uid, IBM_cloud_IAM_pwd ) )
+    iam_token = response.json()["access_token"]
+    print('iam_token = ', iam_token)
     
     # API呼出し用ヘッダ
-    header = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + mltoken}
+    ml_instance_id = wml_credentials["instance_id"]
+    header = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + iam_token, 
+      'ML-Instance-ID': ml_instance_id}
     payload_scoring = {"values": [im_data4]}
 
     # API呼出し
